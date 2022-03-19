@@ -18,27 +18,36 @@ router.post('/register', urlencodedParser,(req,res)=>{
     
     var cryptPassword =  crypto.createHash("sha1").update(password).digest()
 
-    // let user = {
-    //     login: login,
-    //     password: cryptPassword.toString('hex')
-    // };
-
     let user = {
         login: login,
-        password: password
+        password: cryptPassword.toString('hex')
     };
+
+    // let user = {
+    //     login: login,
+    //     password: password
+    // };
 
     var xhr = new  XMLHttpRequest();
     var body = JSON.stringify(user);
     xhr.open("POST", 'https://helloworldprojectt.herokuapp.com/v1/authorization',false);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.withCredentials = true;
     xhr.send(body);
 
-    console.log(xhr.status)
-    console.log(cryptPassword.toString('hex'))
+    if (xhr.status == 200){
+        var getRes = new XMLHttpRequest();
+        getRes.open("GET", 'https://helloworldprojectt.herokuapp.com/v1/cars',false);
+        getRes.setRequestHeader("access_token", xhr.getResponseHeader("access_token"));
+        getRes.withCredentials = true;
+        getRes.send(body);
+        console.log(JSON.parse(getRes.responseText));
 
-    if (xhr.status == 200)
-        res.render('nextPage')
+         var carsList = JSON.parse(getRes.responseText);
+
+
+        res.render('nextPage',{carsList: carsList})
+    }
     else
         res.render('exeption');
 
