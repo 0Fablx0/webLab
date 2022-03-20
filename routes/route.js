@@ -18,6 +18,7 @@ router.post('/register', urlencodedParser,(req,res)=>{
     
     var cryptPassword =  crypto.createHash("sha1").update(password).digest()
 
+
     let user = {
         login: login,
         password: cryptPassword.toString('hex')
@@ -29,6 +30,7 @@ router.post('/register', urlencodedParser,(req,res)=>{
     // };
 
     var xhr = new  XMLHttpRequest();
+
     var body = JSON.stringify(user);
     xhr.open("POST", 'https://helloworldprojectt.herokuapp.com/v1/authorization',false);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
